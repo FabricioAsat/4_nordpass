@@ -1,19 +1,16 @@
 import User from "../../models/user.model.js";
 
 export const login = async (req, res) => {
-	try {
-		const { email, password } = req.body;
-		const user = await User.findOne({ email: email.toLowerCase() });
+	const { email, password } = req.body;
 
-		if (!user) throw new Error({ message: "Usuario no encontrado", status: 404 });
+	// Búsqueda de usuario
+	const user = await User.findOne({ email: email.toLowerCase() });
+	if (!user) return res.status(400).send({ message: "Usuario no encontrado" });
 
-		const isPasswordValid = await encrypt.compare(password, user.password);
-		if (!isPasswordValid) throw new Error({ message: "Contraseña incorrecta", status: 400 });
+	// Comparación de contraseñas
+	const isPasswordValid = await encrypt.compare(password, user.password);
+	if (!isPasswordValid) return res.status(400).send({ message: "Contraseña incorrecta" });
 
-		delete user.password;
-		return res.status(200).send({ message: "Bienvenido", response: user });
-	} catch (err) {
-		console.error(err.message);
-		return res.status(err.status || 400).send({ message: err.message });
-	}
+	delete user.password;
+	return res.status(200).send({ message: "Bienvenido", response: user });
 };
