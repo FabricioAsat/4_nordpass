@@ -1,3 +1,4 @@
+import encrypt from "bcrypt";
 import User from "../../models/user.model.js";
 
 export const login = async (req, res) => {
@@ -11,6 +12,9 @@ export const login = async (req, res) => {
 	const isPasswordValid = await encrypt.compare(password, user.password);
 	if (!isPasswordValid) return res.status(400).send({ message: "Contraseña incorrecta" });
 
-	delete user.password;
-	return res.status(200).send({ message: "Bienvenido", response: user });
+	// Creo un objeto que no contenga la contraseña del usuario y la retorno al cliente
+	const sanitizedUser = user.toObject();
+	delete sanitizedUser.password;
+
+	return res.status(200).send({ message: "Bienvenido", response: sanitizedUser });
 };
