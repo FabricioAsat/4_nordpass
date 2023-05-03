@@ -1,7 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-//
+// Func
+import { emailValidator } from "../helpers/emailValidator";
+import { POST_register } from "../api/userRequests";
+
+// Images
 import logo from "../assets/logo.svg";
 import show from "../assets/show.svg";
 import hide from "../assets/hide.svg";
@@ -14,6 +19,7 @@ export const RegisterPage = () => {
 		masterPassword: false,
 	});
 	const [body, setBody] = useState({ username: "", email: "", masterPassword: "" });
+	const NavigateTo = useNavigate();
 
 	function handleFocusInput(e, isEnter) {
 		setFocusInput({ ...focusInput, [e.target.name]: isEnter });
@@ -25,7 +31,37 @@ export const RegisterPage = () => {
 
 	function handleOnSubmit(e) {
 		e.preventDefault();
+
+		// Validaciones
+		if (body.username.length < 3 || body.username.length > 30) {
+			toast.error("Username inválido");
+			return;
+		}
+		if (body.masterPassword.length < 6 || body.masterPassword.length > 50) {
+			toast.error("Contraseña inválida");
+			return;
+		}
+		if (!emailValidator(body.email)) {
+			toast.error("Email inválido");
+			return;
+		}
+
+		async function getData() {
+			const data = await POST_register(body);
+			if (!data.status) {
+				toast.error(data.message);
+				return;
+			}
+
+			toast.success(data.data.message || "Success");
+			localStorage.setItem("user-email", data.data.response.email);
+			localStorage.setItem("user", JSON.stringify(data.data.response));
+			NavigateTo("/");
+		}
+		getData();
 	}
+
+	// Effects
 
 	return (
 		<div className="flex flex-col max-w-lg w-full mx-auto my-auto bg-dark4 pt-5 pb-10 px-5 rounded-xl">

@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
+// Funct
+import { POST_login } from "../api/userRequests";
+import { emailValidator } from "../helpers/emailValidator";
+
+// Images
 import logo from "../assets/logo.svg";
 import show from "../assets/show.svg";
 import hide from "../assets/hide.svg";
@@ -13,6 +19,7 @@ export const LoginPage = () => {
 		masterPassword: false,
 	});
 	const [body, setBody] = useState({ email: "", masterPassword: "" });
+	const NavigateTo = useNavigate();
 
 	function handleFocusInput(e, isEnter) {
 		setFocusInput({ ...focusInput, [e.target.name]: isEnter });
@@ -22,17 +29,38 @@ export const LoginPage = () => {
 		setBody({ ...body, [e.target.name]: e.target.value });
 	}
 
-	// TODO
-	function handleOnSubmit(e) {
-		e.preventDefault();
-	}
-
 	function handleDeleteUserEmailLocalstorage() {
 		localStorage.removeItem("user-email");
 		setBody({ ...body, email: "" });
 	}
 
+	// TODO
+	function handleOnSubmit(e) {
+		e.preventDefault();
+
+		if (!emailValidator(body.email)) {
+			toast.error("Email inválido");
+			return;
+		}
+
+		async function getData() {
+			const data = await POST_login(body);
+			if (!data.status) {
+				toast.error(data.message);
+				return;
+			}
+
+			toast.success(data.data.message || "Success");
+			localStorage.setItem("user-email", data.data.response.email);
+			localStorage.setItem("user", JSON.stringify(data.data.response));
+			NavigateTo("/");
+		}
+		getData();
+	}
+
+	// Effects
 	useEffect(() => {
+		if (!!body.email) return;
 		const email = localStorage.getItem("user-email");
 		if (!email) return;
 		setBody({ ...body, email: email });
