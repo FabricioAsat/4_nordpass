@@ -5,9 +5,9 @@ export default function App() {
 	return (
 		<>
 			<Toaster position="top-left" richColors />
-			<div className="h-screen flex items-center justify-center">
+			<main className="h-screen max-h-screen flex items-center justify-center">
 				<Router />
-			</div>
+			</main>
 		</>
 	);
 }

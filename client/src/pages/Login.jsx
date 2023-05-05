@@ -14,6 +14,7 @@ import clear from "../assets/delete.svg";
 
 export const LoginPage = () => {
 	const [viewPass, setViewPass] = useState(false);
+	const [isOnLS, setIsOnLS] = useState(false);
 	const [focusInput, setFocusInput] = useState({
 		email: false,
 		masterPassword: false,
@@ -32,6 +33,7 @@ export const LoginPage = () => {
 	function handleDeleteUserEmailLocalstorage() {
 		localStorage.removeItem("user-email");
 		setBody({ ...body, email: "" });
+		setIsOnLS(false);
 	}
 
 	// TODO
@@ -64,7 +66,8 @@ export const LoginPage = () => {
 		const email = localStorage.getItem("user-email");
 		if (!email) return;
 		setBody({ ...body, email: email });
-	}, [body]);
+		setIsOnLS(true);
+	}, []);
 
 	return (
 		<div className="flex flex-col max-w-lg w-full mx-auto my-auto bg-dark4 pt-5 pb-10 px-5 rounded-xl">
@@ -74,13 +77,13 @@ export const LoginPage = () => {
 
 			<aside className="flex flex-col items-center">
 				<h1 className="text-3xl font-bold text-center">
-					{!body.email ? "Complete the fields" : `Enter your master pasword`}
+					{!isOnLS ? "Complete the fields" : `Enter your master pasword`}
 				</h1>
 				<i className="text-green-500">Be unhackable</i>
 			</aside>
 
 			<form onSubmit={handleOnSubmit} className="flex flex-col px-5 sm:px-10 gap-y-10 pt-10 pb-5">
-				{!body.email ? (
+				{!isOnLS ? (
 					<span
 						className={`flex flex-col bg-neutral-950 rounded-md border-2 transition-colors duration-300 hover:border-dark1 ${
 							focusInput?.email ? "border-dark1" : "border-dark4"
@@ -113,7 +116,13 @@ export const LoginPage = () => {
 							<img src={logo} alt="img" className="w-5" />
 							<p>{body.email}</p>
 						</span>
-						<button onClick={handleDeleteUserEmailLocalstorage} className="text-red-600">
+						<button
+							onClick={() => {
+								handleDeleteUserEmailLocalstorage();
+								setIsOnLS(false);
+							}}
+							className="text-red-600"
+						>
 							<img src={clear} alt="clear" className="w-5" />
 						</button>
 					</aside>
