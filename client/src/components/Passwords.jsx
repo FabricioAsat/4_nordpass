@@ -6,10 +6,18 @@ import { getPasswords } from "../api/passwordsRequests";
 
 // Images
 import passwordImage from "../assets/password.svg";
+import { CreatePassword } from "./CreatePassword";
 
 export const Passwords = ({ userProps }) => {
 	const [data, setData] = useState([]);
+	const [isGettingData, setIsGettingData] = useState(true);
+	const [isCreattingPassword, setIsCreattingPassword] = useState(false);
 
+	function handleCreatePassword() {
+		setIsCreattingPassword(true);
+	}
+
+	// Effects
 	useEffect(() => {
 		if (!userProps._id) return;
 
@@ -18,32 +26,63 @@ export const Passwords = ({ userProps }) => {
 			console.log(data);
 			if (!data.status) {
 				toast.error(data.message);
+				setIsGettingData(false);
 				return;
 			}
 			setData(data.data?.response);
 		}
 		getData();
+		setIsGettingData(false);
 	}, [userProps]);
 
-	if (!data || data.length === 0)
+	// Loading
+	if (isGettingData)
 		return (
 			<div className="flex flex-col h-full items-center justify-center">
 				<picture className="bg-dark2 p-4 rounded-2xl my-3">
-					<img src={passwordImage} alt="password" className="w-16" />
+					<img src={passwordImage} alt="password" className="w-16 animate-spin" />
 				</picture>
-				<h5 className="text-3xl font-bold py-2">No hay contraseñas</h5>
-
-				<button className="text-gray-400 italic border-2 border-dark1 px-5 py-2 rounded-full hover:brightness-125 duration-300 ease-out transition-all">
-					Crear nueva contraseña
-				</button>
+				<h5 className="text-3xl font-bold py-2">Cargando contraseñas</h5>
 			</div>
 		);
 
+	// No hay items
+	if (!data || data.length === 0)
+		return (
+			<>
+				<div className="flex flex-col h-full items-center justify-center">
+					<picture className="bg-dark2 p-4 rounded-2xl my-3">
+						<img src={passwordImage} alt="password" className="w-16" />
+					</picture>
+					<h5 className="text-3xl font-bold py-2">No hay contraseñas</h5>
+
+					<button
+						onClick={handleCreatePassword}
+						className="text-gray-400 italic border-2 border-dark1 px-5 py-2 rounded-full hover:brightness-125 duration-300 ease-out transition-all"
+					>
+						Crear nueva contraseña
+					</button>
+				</div>
+				{isCreattingPassword && (
+					<CreatePassword
+						setIsCreattingPassword={setIsCreattingPassword}
+						userProps={userProps}
+						setPasswords={setData}
+						passwords={data}
+					/>
+				)}
+			</>
+		);
+
+	// Hay items
 	return (
 		<>
 			<header className="flex items-center justify-between pt-10 pb-5">
 				<h2 className="text-3xl font-bold">Contraseñas</h2>
-				<button className="italic text-sm border-2 border-dark1 px-5 py-2 rounded-full hover:brightness-125 duration-300 ease-out transition-all">
+				<button
+					onClick={handleCreatePassword}
+					className="italic text-sm border-2 border-dark1 px-5 py-2 rounded-full hover:brightness-125 duration-300 ease-out transition-all"
+				>
 					Crear contraseña
 				</button>
 			</header>
@@ -68,6 +107,15 @@ export const Passwords = ({ userProps }) => {
 					</aside>
 				))}
 			</section>
+
+			{isCreattingPassword && (
+				<CreatePassword
+					setIsCreattingPassword={setIsCreattingPassword}
+					userProps={userProps}
+					setPasswords={setData}
+					passwords={data}
+				/>
+			)}
 		</>
 	);
 };

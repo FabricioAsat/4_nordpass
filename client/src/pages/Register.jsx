@@ -156,14 +156,14 @@ export const RegisterPage = () => {
 							onBlur={(e) => handleFocusInput(e, false)}
 							className="w-full bg-transparent pb-2 pt-1 px-2 outline-none text-sm font-bold"
 						/>
-						<button
+						<span
 							className="mr-3 mb-1"
-							onClick={(e) => {
-								e.preventDefault(), setViewPass(!viewPass);
+							onClick={() => {
+								setViewPass(!viewPass);
 							}}
 						>
-							<img src={viewPass ? hide : show} alt="" className="w-6" />
-						</button>
+							<img src={viewPass ? hide : show} alt="show-hide" className="w-6" />
+						</span>
 					</span>
 				</span>
 

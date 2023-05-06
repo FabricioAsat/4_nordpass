@@ -11,3 +11,15 @@ export const getPasswords = async (body) => {
 		return { status: false, message: response.data.message || "Error" };
 	}
 };
+
+export const createPassword = async (body) => {
+	try {
+		const { data } = await axios.post(
+			import.meta.env.VITE_URL_REQUEST + "passwords/createpassword",
+			body
+		);
+		return { status: true, data };
+	} catch ({ response }) {
+		return { status: false, message: response.data.message || "Error" };
+	}
+};

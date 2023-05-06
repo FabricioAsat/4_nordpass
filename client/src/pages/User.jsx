@@ -73,7 +73,7 @@ export const UserPage = () => {
 				</article>
 			</section>
 
-			<article className="h-full w-full px-5 bg-dark4">{page}</article>
+			<article className="h-full w-full px-5 bg-dark4 overflow-y-auto scroll">{page}</article>
 		</div>
 	);
 };
