@@ -70,7 +70,7 @@ export const CreatePassword = ({ setIsCreattingPassword, userProps, setPasswords
 	}
 
 	return (
-		<div className="absolute h-full bg-black/50 top-0 right-0 w-full">
+		<div className="absolute h-full bg-black/50 top-0 right-0 w-full py-5">
 			<div className="relative h-full bg-dark4 w-full max-w-3xl mx-auto pt-10 overflow-y-auto scroll">
 				<picture className="w-full">
 					<img src={passwordImage} alt="Password" className="w-24 mx-auto" />
@@ -231,7 +231,7 @@ export const CreatePassword = ({ setIsCreattingPassword, userProps, setPasswords
 
 					{/* Submit */}
 					<span className="flex items-center justify-center">
-						<button className="my-5 mx-5 py-2 px-4 border border-sky-800 rounded-full bg-sky-800 text-xs">
+						<button className="my-5 mx-5 py-2 px-10 border border-sky-800 rounded-full bg-sky-800 text-xs">
 							Guardar
 						</button>
 						<button
@@ -239,7 +239,7 @@ export const CreatePassword = ({ setIsCreattingPassword, userProps, setPasswords
 								e.preventDefault();
 								setIsCreattingPassword(false);
 							}}
-							className="my-5 mx-5 py-2 px-4 border rounded-full border-neutral-500 text-xs"
+							className="my-5 mx-5 py-2 px-10 border rounded-full border-neutral-500 text-xs"
 						>
 							Cerrar
 						</button>

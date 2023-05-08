@@ -7,11 +7,14 @@ import { getPasswords } from "../api/passwordsRequests";
 // Images
 import passwordImage from "../assets/password.svg";
 import { CreatePassword } from "./CreatePassword";
+import { ShowPassword } from "./ShowPassword";
 
 export const Passwords = ({ userProps }) => {
 	const [data, setData] = useState([]);
 	const [isGettingData, setIsGettingData] = useState(true);
 	const [isCreattingPassword, setIsCreattingPassword] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+	const [currentPassword, setCurrentPassword] = useState({});
 
 	function handleCreatePassword() {
 		setIsCreattingPassword(true);
@@ -90,9 +93,13 @@ export const Passwords = ({ userProps }) => {
 				{data.map((pass) => (
 					<aside
 						key={pass._id}
-						className="flex gap-x-4 items-center px-5 py-3 w-full border-t border-neutral-500"
+						onClick={() => {
+							setShowPassword(true);
+							setCurrentPassword(pass);
+						}}
+						className="flex gap-x-4 items-center px-5 py-4 w-full border-t border-neutral-500 cursor-pointer hover:bg-dark1/50 transition-colors duration-300 ease-out"
 					>
-						<span className="bg-dark1 h-10 rounded-md flex items-center justify-center text-lg font-extrabold mx-5">
+						<span className="bg-neutral-950 h-10 rounded-md flex items-center justify-center text-lg font-extrabold mx-5">
 							<p className="w-10 text-center">{pass.title.slice(0, 2)}</p>
 						</span>
 
@@ -115,6 +122,10 @@ export const Passwords = ({ userProps }) => {
 					setPasswords={setData}
 					passwords={data}
 				/>
+			)}
+
+			{showPassword && (
+				<ShowPassword setShowPassword={setShowPassword} passProps={currentPassword} />
 			)}
 		</>
 	);
